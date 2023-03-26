@@ -14,34 +14,52 @@ import { ProductData } from 'types/ProductData';
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'name',
-    numeric: false,
+    id: 'thumbnail',
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Photo',
+    disableSorting: true,
   },
   {
-    id: 'calories',
+    id: 'id',
     numeric: true,
     disablePadding: false,
-    label: 'Calories',
+    label: 'id',
   },
   {
-    id: 'fat',
+    id: 'title',
     numeric: true,
     disablePadding: false,
-    label: 'Fat (g)',
+    label: 'Title',
   },
   {
-    id: 'carbs',
+    id: 'description',
     numeric: true,
     disablePadding: false,
-    label: 'Carbs (g)',
+    label: 'Description',
   },
   {
-    id: 'protein',
+    id: 'price',
     numeric: true,
     disablePadding: false,
-    label: 'Protein (g)',
+    label: 'Price',
+  },
+  {
+    id: 'rating',
+    numeric: true,
+    disablePadding: false,
+    label: 'Rating',
+  },
+  {
+    id: 'stock',
+    numeric: true,
+    disablePadding: false,
+    label: 'Stock',
+  },
+  {
+    id: 'category',
+    numeric: true,
+    disablePadding: false,
+    label: 'Category',
   },
 ];
 
@@ -80,18 +98,24 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.disableSorting ? (
+              headCell.label
+            ) : (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc'
+                      ? 'sorted descending'
+                      : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
       </TableRow>
