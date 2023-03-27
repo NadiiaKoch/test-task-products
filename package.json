@@ -1,5 +1,6 @@
 {
   "name": "test-task-products",
+  "homepage": "https://NadiiaKoch.github.io/test-task-products",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -30,6 +31,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "fontfaceobserver": "2.3.0",
     "formik": "2.2.9",
+    "gh-pages": "5.0.0",
     "husky": "8.0.1",
     "i18next": "21.9.2",
     "i18next-browser-languagedetector": "6.1.5",
@@ -68,6 +70,8 @@
     "yup": "1.0.2"
   },
   "scripts": {
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

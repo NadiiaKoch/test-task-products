@@ -27,13 +27,13 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'title',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Title',
   },
   {
     id: 'description',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Description',
   },
@@ -57,7 +57,7 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'category',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Category',
   },

@@ -3,10 +3,19 @@ import { IconButton, Toolbar, Tooltip } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { EnhancedTableToolbarProps } from '../types/EnhancedTableToolbarProps';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { useDispatch } from 'react-redux';
+import { useProductsSlice } from '../../slice';
 
 export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+  const dispatch = useDispatch();
+
+  const { actions } = useProductsSlice();
+
+  const { numSelected, selected } = props;
+
+  const handleRemove = () => {
+    dispatch(actions.removeProduct({ ids: selected }));
+  };
 
   return (
     <Toolbar
@@ -22,19 +31,11 @@ export function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Tooltip title="Delete">
+        <IconButton onClick={handleRemove}>
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
     </Toolbar>
   );
 }

@@ -1,56 +1,107 @@
 import React from 'react';
-import { useFormik } from 'formik';
+import { Field, Form, Formik } from 'formik';
+import { TextField, Button, Box, Grid } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useProductsSlice } from 'app/pages/HomePage/slice';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { TextField, Button } from '@mui/material';
 
-const validationSchema = yup.object({
-  name: yup.string().email('Enter a valid email').required('Email is required'),
-  password: yup
-    .string()
-    .min(8, 'Password should be of minimum 8 characters length')
-    .required('Password is required'),
+export const validationSchema = yup.object({
+  title: yup.string().required('Title is required'),
+  author: yup.string().required('Author is required'),
+  year: yup
+    .number()
+    .integer('Year must be a whole number')
+    .min(1900, 'Year must be at least 1900')
+    .max(
+      new Date().getFullYear(),
+      `Year cannot be more than the current year (${new Date().getFullYear()})`,
+    ),
+  rating: yup
+    .number()
+    .min(1, 'Rating must be at least 1')
+    .max(5, 'Rating cannot be more than 5')
+    .nullable(),
 });
 
-export const WithMaterialUI = () => {
-  const formik = useFormik({
-    initialValues: {
-      email: 'foobar@example.com',
-      password: 'foobar',
-    },
-    validationSchema: validationSchema,
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
+export function AddProductForm() {
+  const { actions } = useProductsSlice();
 
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const handleFormSubmit = values => {
+    dispatch(actions.addProduct({ form: values, navigate }));
+  };
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          fullWidth
-          id="email"
-          name="email"
-          label="Email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <TextField
-          fullWidth
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
-        </Button>
-      </form>
-    </div>
+    <Box maxWidth="300px" margin="0 auto">
+      <Formik
+        initialValues={{ title: '', author: '', year: '', rating: null }}
+        validationSchema={validationSchema}
+        onSubmit={handleFormSubmit}
+      >
+        {({ handleSubmit, handleChange, values, errors, touched }) => (
+          <Form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Field
+                  as={TextField}
+                  name="title"
+                  label="Title"
+                  fullWidth
+                  value={values.title}
+                  onChange={handleChange}
+                  error={touched.title && Boolean(errors.title)}
+                  helperText={touched.title && errors.title}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  as={TextField}
+                  name="author"
+                  label="Author"
+                  fullWidth
+                  value={values.author}
+                  onChange={handleChange}
+                  error={touched.author && Boolean(errors.author)}
+                  helperText={touched.author && errors.author}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Field
+                  as={TextField}
+                  name="year"
+                  label="Year"
+                  fullWidth
+                  value={values.year}
+                  onChange={handleChange}
+                  error={touched.year && Boolean(errors.year)}
+                  helperText={touched.year && errors.year}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Field
+                  as={TextField}
+                  name="rating"
+                  label="Rating"
+                  type="number"
+                  step="0.01"
+                  fullWidth
+                  value={values.rating}
+                  onChange={handleChange}
+                  error={touched.rating && Boolean(errors.rating)}
+                  helperText={touched.rating && errors.rating}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary">
+                  Add Product
+                </Button>
+              </Grid>
+            </Grid>
+          </Form>
+        )}
+      </Formik>
+    </Box>
   );
-};
+}

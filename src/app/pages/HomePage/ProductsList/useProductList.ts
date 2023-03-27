@@ -1,45 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { ProductData } from 'types/ProductData';
+import { useProductsSlice } from '../slice';
+import { selectProducts } from '../slice/selectors';
 import { getComparator, Order, stableSort } from './utils/helpers';
 
-const rowsMock: ProductData[] = [
-  {
-    id: '1',
-    title: 'iPhone 9',
-    description: 'An apple mobile which is nothing like apple',
-    price: '549',
-    rating: '4.69',
-    stock: '94',
-    category: 'smartphones',
-    thumbnail: 'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
-  },
-  {
-    id: '2',
-    title: 'iPhone 10',
-    description: 'An apple mobile which is nothing like apple',
-    price: '549',
-    rating: '4.69',
-    stock: '94',
-    category: 'smartphones',
-    thumbnail: 'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
-  },
-];
-
 export const useProductList = () => {
+  const { actions } = useProductsSlice();
+  const dispatch = useDispatch();
+
+  const products = useSelector(selectProducts);
+
+  const { loading, error, productListState } = products;
+
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof ProductData>('category');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [selected, setSelected] = React.useState<string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
-
-  const [rowData, setRowData] = useState<ProductData[]>([]);
+  const [rowsPerPage, setRowsPerPage] = React.useState(30);
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products')
-      .then(res => res.json())
-      .then(res => {
-        setRowData(res.products);
-      });
+    dispatch(actions.getProducts({}));
   }, []);
 
   const handleRequestSort = (
@@ -53,7 +34,7 @@ export const useProductList = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map(n => n.title);
+      const newSelected = rows.map(n => n.id);
       setSelected(newSelected);
       return;
     }
@@ -62,7 +43,7 @@ export const useProductList = () => {
 
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
     const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
+    let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
@@ -80,10 +61,6 @@ export const useProductList = () => {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -93,16 +70,19 @@ export const useProductList = () => {
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
-  const rows = stableSort(rowData, getComparator(order, orderBy)).slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage,
-  );
+  const rows = stableSort(
+    productListState?.products || [],
+    getComparator(order, orderBy),
+  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return {
+    productTotal: productListState?.total || 0,
+    loading,
+    error,
     rows,
     order,
     orderBy,
@@ -112,7 +92,6 @@ export const useProductList = () => {
     emptyRows,
     isSelected,
     handleChangeRowsPerPage,
-    handleChangePage,
     handleClick,
     handleSelectAllClick,
     handleRequestSort,
