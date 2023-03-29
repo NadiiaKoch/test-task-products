@@ -27,7 +27,7 @@ The following technologies were used in this project:
 
 ## Screenshot
 
-## ![](demo.png)
+## ![](Demo.png)
 
 ## Project functionality
 
