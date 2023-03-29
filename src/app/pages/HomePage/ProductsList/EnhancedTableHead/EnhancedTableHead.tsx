@@ -14,16 +14,17 @@ import { ProductData } from 'types/ProductData';
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'thumbnail',
+    id: 'id',
+    numeric: false,
     disablePadding: true,
-    label: 'Photo',
-    disableSorting: true,
+    label: 'id',
   },
   {
-    id: 'id',
-    numeric: true,
+    id: 'thumbnail',
+    numeric: false,
     disablePadding: false,
-    label: 'id',
+    disableSorting: true,
+    label: 'Photo',
   },
   {
     id: 'title',

@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { NewProductForm } from 'types/NewProductForm';
+import { ProductData } from 'types/ProductData';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { productsSaga } from './saga';
@@ -59,6 +60,7 @@ const slice = createSlice({
     },
 
     addProduct(state, action: PayloadAction<AddProductAction>) {
+      console.log(action.payload.form);
       state.loading = true;
       state.error = false;
     },

@@ -31,7 +31,20 @@ export function AddProductForm() {
 
   const navigate = useNavigate();
   const handleFormSubmit = values => {
-    dispatch(actions.addProduct({ form: values, navigate }));
+    dispatch(
+      actions.addProduct({
+        form: {
+          ...values,
+          id: '101',
+          description: 'fh',
+          price: 'iuefg',
+          stock: 'wt',
+          category: 'wt',
+          thumbnail: 'wt',
+        },
+        navigate,
+      }),
+    );
   };
   return (
     <Box maxWidth="300px" margin="0 auto">

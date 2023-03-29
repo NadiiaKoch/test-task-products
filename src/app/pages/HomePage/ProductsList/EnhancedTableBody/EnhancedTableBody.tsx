@@ -35,9 +35,11 @@ export function EnhancedTableBody({
               />
             </TableCell>
             <TableCell component="th" id={labelId} scope="row" padding="none">
+              {row.id}
+            </TableCell>
+            <TableCell align="left">
               <img width="60px" src={row.thumbnail} alt={row.title} />
             </TableCell>
-            <TableCell align="right">{row.id}</TableCell>
             <TableCell align="left">{row.title}</TableCell>
             <TableCell align="left">{row.description}</TableCell>
             <TableCell align="right">{row.price}</TableCell>
